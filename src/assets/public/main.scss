@@ -3,7 +3,7 @@
 .wraper {
 	width: 100%;
 	margin: 0;
-	padding: 0 40px;
+	padding: 1px 40px;
 	box-sizing: border-box;
 	@media (max-width: $phone) {
 		padding: 0;
@@ -14,7 +14,7 @@
 	width: 100%;
 	box-sizing: border-box;
 	padding: 50px;
-	margin: 20px auto;
+	margin: 20px auto 100px;
 	box-shadow: 5px 5px 15px 0 $back;
 	min-height: calc(100vh - 185px);
 	@media (max-width: $phone) {

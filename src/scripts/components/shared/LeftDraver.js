@@ -88,6 +88,7 @@ const LeftDraver = ({
 export default connect(
 	state => ({
         isOpen: state.menuTrigger.openLeftDraver,
+        auth: state.userState.auth,
     }),
     dispatch => ({
         onToggleDrawerClick:(status) => () => {

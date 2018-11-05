@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import { connect } from 'react-redux';
 import classNames from 'classnames';
 
+import httpXHR from 'lib/httpXHR';
+
 import { withStyles } from '@material-ui/core/styles';
 import AnchorLink from 'react-anchor-link-smooth-scroll';
 import LeftDraver from 'shared/LeftDraver';
@@ -47,14 +49,35 @@ const styles = theme => ({
 });
 
 const Login = ({
-	classes
+	classes,
+	errorEmail,
+	errorPassword,
+	emailValue,
+	passwordValue,
+	onEmailChange,
+	onPasswordChange,
+	onSubmitFormCheck,
+	onGetUser,
+	onSubmitForm,
+	...props,
 }) => {
     return ([
         <Header key="1" headerText={'Login'}/>,
         <LeftDraver key="2"/>,
         <div key="3" className={'wraper'}>
 	        <div className={'container'}>
-		        <form className={classes.form} noValidate autoComplete="off">
+		        <form
+		        	className={classes.form}
+		        	noValidate
+		        	autoComplete="off"
+		        	onSubmit={onSubmitForm({
+		        		emailValue,
+		        		passwordValue,
+		        		push: props.history.push,
+		        		onSubmitFormCheck: onSubmitFormCheck,
+		        		onGetUser: onGetUser,
+		        	})}
+		        >
 		        	<Typography variant="h5" color="inherit" className={classes.grow}>
 		                To Log In, enter your details.
 		            </Typography>
@@ -67,6 +90,7 @@ const Login = ({
 			          autoComplete="email"
 			          margin="normal"
 			          variant="outlined"
+			          onChange={onEmailChange}
 			        />
 			        <TextField
 			          id="outlined-password-input"
@@ -76,6 +100,7 @@ const Login = ({
 			          autoComplete="current-password"
 			          margin="normal"
 			          variant="outlined"
+			          onChange={onPasswordChange}
 			        />
 			        <Button
 			        	variant="contained"
@@ -115,4 +140,72 @@ const Login = ({
     ]);
 };
 
-export default withStyles(styles)(Login);
+export default connect(
+	state => ({
+		errorEmail: state.loginState.errorEmail,
+		errorPassword: state.loginState.errorPassword,
+		emailValue: state.loginState.emailValue,
+		passwordValue: state.loginState.passwordValue,
+	}),
+    dispatch => ({
+        onEmailChange: (e) => {
+        	dispatch({
+                type: 'loginEmailValue',
+                payload: {
+                    emailValue: e.target.value,
+                },
+            })
+        },
+        onPasswordChange: (e) => {
+        	dispatch({
+                type: 'loginPasswordValue',
+                payload: {
+                    passwordValue: e.target.value,
+                },
+            })
+        },
+        onSubmitFormCheck: (obj)=> {
+        	dispatch({
+                type: 'loginFormCheck',
+                payload: {
+                    checkResults: obj,
+                },
+            });
+        },
+        onGetUser: (obj) => {
+        	dispatch({
+        		type: 'setUser',
+        		payload: {
+        			user: obj,
+        		}
+        	})
+        },
+        onSubmitForm: (obj) => (e) => {
+			e.preventDefault();
+			let emailErrorStatus = !(/^[-.\w]+@([\w-]+\.)+[\w-]{2,12}$/.test(obj.emailValue));
+			let passwordErrorStatus = !(obj.passwordValue);
+			obj.onSubmitFormCheck({emailErrorStatus: obj.emailErrorStatus, passwordErrorStatus: obj.passwordErrorStatus});
+			if (emailErrorStatus) {
+				return;
+			}
+			httpXHR({
+				path: '/login',
+				type: 'POST',
+				contentType: 'application/json',
+				data: JSON.stringify({
+					emailValue: obj.emailValue,
+					passwordValue: obj.passwordValue,
+				})
+			})
+                .then((res) => {
+                    obj.onGetUser(res);
+                    obj.push('/');
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
+			return;
+		},
+    })
+
+)(withStyles(styles)(Login));

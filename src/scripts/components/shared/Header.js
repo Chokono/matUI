@@ -64,7 +64,9 @@ const Header = ({
 }
 
 export default connect(
-    state => ({}),
+    state => ({
+      auth: state.userState.auth,
+    }),
     dispatch => ({
         onToggleDrawerClick: (status) => () => {
             dispatch({

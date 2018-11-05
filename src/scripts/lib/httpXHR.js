@@ -1,4 +1,4 @@
-function httpXHR({ siteHost, path, type, contentType, authorization, data }) {
+function httpXHR({ path, type, contentType, authorization, data }) {
 
     return new Promise(function(resolve, reject) {
 
@@ -6,10 +6,10 @@ function httpXHR({ siteHost, path, type, contentType, authorization, data }) {
 
         //xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
 
-        xhr.open(type, siteHost + path, true);
+        xhr.open(type, path, true);
         contentType && xhr.setRequestHeader('Content-Type', contentType); // application/json
         authorization && xhr.setRequestHeader('Authorization', authorization); // "JWT eyJhbGciO.iJIUzI1Ni.IsInR5c"
-        console.log('@>', type, siteHost + path);
+        console.log('@>', type, path);
 
         xhr.onreadystatechange = function() {
             if (this.readyState != 4) return;

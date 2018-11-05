@@ -5,6 +5,8 @@ const url = require('url');
 const webpack = require('webpack');
 const MimeLookup = require('mime-lookup');
 const mime = new MimeLookup(require('mime-db'));
+const getUser = require('./serverWorkers/getUser');
+const setUser = require('./serverWorkers/setUser');
 
 global.MY1_SERVER = true;
 
@@ -51,8 +53,16 @@ http2.createSecureServer(PortfolioOptions, function(request, response) {
 
     response.setHeader('Access-Control-Allow-Origin', '*');
 
-    if (urlParsed.pathname.indexOf("/apiv1/") === 0) {
         if (request.method === "POST") {
+            if (urlParsed.pathname === "/signup") {
+                callback = ({ req, res }) => {
+                    setUser(req, res);
+                }
+            } else if (urlParsed.pathname === "/login") {
+                callback = ({ req, res }) => {
+                    getUser(req, res);
+                }
+            }
             if (urlParsed.pathname === "/apiv1/user") {
 
                 callback = ({ req, res }) => {
@@ -80,9 +90,7 @@ http2.createSecureServer(PortfolioOptions, function(request, response) {
                    
                 }
             }
-        }
-    } else {
-        if (request.method == "GET") {
+        } else if (request.method == "GET") {
             if (urlParsed.pathname === "/") {
                 request = UTILS.getFile(response, path.join(__dirname, "bundle", "index.html"));
 
@@ -114,7 +122,6 @@ http2.createSecureServer(PortfolioOptions, function(request, response) {
                 };
             }
         }
-    }
 
     middlewares.init({ req: request, res: response }, callback);
 

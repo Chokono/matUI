@@ -21,4 +21,15 @@ const HomeComp = (props) => {
     ]);
 };
 
-export default HomeComp;
+export default connect(
+	state => ({
+		email: state.userState.email,
+		name: state.userState.name,
+		surname: state.userState.surname,
+		gender: state.userState.gender,
+		imageUrl: state.userState.imageUrl,
+		facebookImageUrl: state.userState.facebookImageUrl,
+		vkImageUrl: state.userState.vkImageUrl,
+		auth: state.userState.auth,
+	}),
+)(HomeComp);
