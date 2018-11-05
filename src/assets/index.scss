@@ -1,0 +1,21 @@
+@import 'reset';
+@import 'fonts';
+
+body {
+    font-family: "Roboto";
+    background-position: center top;
+    background-repeat: no-repeat;
+    box-sizing: border-box;
+}
+
+
+/*@import 'public/header';*/
+@import 'public/main';
+/*@import 'public/footer';
+@import 'public/main';
+@import 'public/files';
+@import 'pages/technology';
+@import 'pages/hobby';
+@import 'pages/home';
+@import 'pages/contacts';*/
+/*font: 15px EnamelaW01-Condensed, arial, sans-serif;*/
