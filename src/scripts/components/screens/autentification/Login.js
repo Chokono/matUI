@@ -90,6 +90,8 @@ const Login = ({
 			          autoComplete="email"
 			          margin="normal"
 			          variant="outlined"
+			          value={emailValue}
+			          error={errorEmail}
 			          onChange={onEmailChange}
 			        />
 			        <TextField
@@ -100,6 +102,8 @@ const Login = ({
 			          autoComplete="current-password"
 			          margin="normal"
 			          variant="outlined"
+			          value={passwordValue}
+			          error={errorPassword}
 			          onChange={onPasswordChange}
 			        />
 			        <Button
@@ -184,8 +188,8 @@ export default connect(
 			e.preventDefault();
 			let emailErrorStatus = !(/^[-.\w]+@([\w-]+\.)+[\w-]{2,12}$/.test(obj.emailValue));
 			let passwordErrorStatus = !(obj.passwordValue);
-			obj.onSubmitFormCheck({emailErrorStatus: obj.emailErrorStatus, passwordErrorStatus: obj.passwordErrorStatus});
-			if (emailErrorStatus) {
+			obj.onSubmitFormCheck({emailErrorStatus: emailErrorStatus, passwordErrorStatus: passwordErrorStatus});
+			if (emailErrorStatus || passwordErrorStatus) {
 				return;
 			}
 			httpXHR({
